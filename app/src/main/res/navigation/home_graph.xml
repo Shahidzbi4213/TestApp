@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graph"
+    app:startDestination="@id/menu_ramazan">
+
+    <fragment
+        android:id="@+id/menu_ramazan"
+        android:name="com.test.interview.presentation.ramazan.RamzanFragment"
+        android:label="fragment_ramzan"
+        tools:layout="@layout/fragment_ramzan" />
+    <fragment
+        android:id="@+id/menu_favourite"
+        android:name="com.test.interview.presentation.favourite.FavouriteFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" />
+    <fragment
+        android:id="@+id/menu_quran"
+        android:name="com.test.interview.presentation.quran.QuranFragment"
+        android:label="fragment_quran"
+        tools:layout="@layout/fragment_quran" />
+</navigation>
