@@ -5,12 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import android.widget.ListAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.test.interview.data.model.Dummy
 import com.test.interview.databinding.FragmentQuranBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class QuranFragment : Fragment() {
 
@@ -20,7 +27,7 @@ class QuranFragment : Fragment() {
     private var _adapter: DummyAdapter? = null
     private val adapter get() = _adapter!!
 
-    private var isScrolling = false
+    private val quranViewModel by viewModels<QuranViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -34,50 +41,34 @@ class QuranFragment : Fragment() {
 
         _adapter = DummyAdapter()
         binding.rvDummy.adapter = adapter
-        adapter.submitList(getDummyData())
+
 
         binding.rvDummy.addOnScrollListener(
-            onScrollListener()
+            quranViewModel.onScrollListener()
         )
 
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-    private fun onScrollListener() =
-        object : RecyclerView.OnScrollListener() {
-
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                isScrolling = true
-        }
-
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-
-            val currentItems = recyclerView.layoutManager!!.childCount
-            val totalItems = recyclerView.layoutManager!!.itemCount
-            val scrollOutItems =
-                (binding.rvDummy.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-
-            if (isScrolling && (scrollOutItems + currentItems == totalItems) && adapter.currentList.size <= 500) {
-
-                isScrolling = false
-                Toast.makeText(requireContext(), "New Data Loaded", Toast.LENGTH_SHORT)
-                    .show()
-                adapter.submitList(getDummyData() + adapter.currentList)
+                quranViewModel.isScrolling.collectLatest {
+                    if (!it) {
+                        when {
+                            adapter.currentList.size == 0 -> adapter.submitList(quranViewModel.getDummyData())
+                            adapter.currentList.size <= 500 -> {
+                                adapter.submitList(adapter.currentList + quranViewModel.getDummyData())
+                                Toast.makeText(
+                                    requireContext(),
+                                    "New Data Loaded",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-
-    private fun getDummyData(): List<Dummy> {
-        val newData = mutableListOf<Dummy>()
-        for (i in 1..50) {
-            newData.add(Dummy(text = "Dummy $i*$i", num = 0))
-        }
-        return newData
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
