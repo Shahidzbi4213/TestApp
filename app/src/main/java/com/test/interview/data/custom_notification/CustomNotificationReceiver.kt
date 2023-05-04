@@ -17,9 +17,8 @@ class CustomNotificationReceiver : BroadcastReceiver() {
         private var player: MediaPlayer? = null
 
         fun Context.getPlayer(): MediaPlayer {
-            if (player == null) {
+            if (player == null)
                 player = MediaPlayer.create(this, R.raw.ramazan_tone)
-            }
             return player!!
         }
     }

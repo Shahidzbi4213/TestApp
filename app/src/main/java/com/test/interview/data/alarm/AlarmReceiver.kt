@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.test.interview.R
+import com.test.interview.utils.NotificationsUtils
 
 /*
  * Created by Shahid Iqbal on 5/3/2023.
@@ -34,8 +35,6 @@ class AlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
 
-        with(NotificationManagerCompat.from(this)) {
-            notify(day.length, builder.build())
-        }
+        NotificationsUtils.startNotification(this, 1122, builder)
     }
 }
