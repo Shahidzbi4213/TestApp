@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.test.interview.R
+import com.test.interview.data.util.pendingFlag
 import com.test.interview.utils.NotificationsUtils
 
 /*
@@ -40,6 +41,6 @@ fun pendingActionTask(context: Context, playStatus: Int): PendingIntent {
     }
     return PendingIntent.getBroadcast(
         context, playStatus, intent,
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        pendingFlag()
     )
 }

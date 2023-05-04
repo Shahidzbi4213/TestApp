@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.test.interview.data.model.AlarmItem
+import com.test.interview.data.util.pendingFlag
 import java.util.Calendar
 
 /*
@@ -44,7 +45,7 @@ class AndroidAlarmScheduler(
                 context,
                 item.hashCode(),
                 intent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+                pendingFlag()
             )
         )
 
@@ -57,7 +58,7 @@ class AndroidAlarmScheduler(
                 context,
                 item.hashCode(),
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                pendingFlag()
             )
         )
     }
